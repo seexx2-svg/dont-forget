@@ -1,0 +1,9 @@
+{
+  "name": "parseReminder",
+  "version": "1.0.0",
+  "description": "AI 智能解析提醒需求（文本/语音 → 结构化提醒数据）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

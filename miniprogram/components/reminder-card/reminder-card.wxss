@@ -1,0 +1,167 @@
+/* components/reminder-card/reminder-card.wxss */
+
+.reminder-card {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.is-overdue {
+  background: #FFFAFA;
+}
+
+/* 逾期左侧红色竖线 */
+.overdue-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6rpx;
+  background: var(--color-danger);
+}
+
+/* 左侧分类图标 */
+.card-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.icon-emoji {
+  font-size: 40rpx;
+}
+
+/* 中间内容 */
+.card-content {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.card-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title-done {
+  text-decoration: line-through;
+  color: var(--color-text-placeholder);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+  flex-wrap: wrap;
+}
+
+.sub-tag {
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  margin-right: 12rpx;
+}
+
+.card-date {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+}
+
+.card-time {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+  margin-left: 8rpx;
+}
+
+.card-lunar {
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+  margin-top: 8rpx;
+}
+
+.card-bottom {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+}
+
+/* 逾期标签 */
+.overdue-badge {
+  font-size: 22rpx;
+  color: #FFFFFF;
+  background: var(--color-danger);
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+
+/* 今天标记 */
+.today-badge {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+/* 倒计时数字突出 */
+.days-left {
+  display: flex;
+  align-items: baseline;
+}
+
+.days-num {
+  font-size: 38rpx;
+  font-weight: 700;
+}
+
+.days-unit {
+  font-size: 22rpx;
+  margin-left: 4rpx;
+}
+
+.repeat-tag {
+  font-size: 20rpx;
+  color: var(--color-text-placeholder);
+  margin-left: 12rpx;
+}
+
+/* 右侧完成按钮 */
+.done-btn {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border: 3rpx solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  background: #FFFFFF;
+}
+
+.done-active {
+  border-color: var(--color-success);
+  background: var(--color-success);
+}
+
+.done-icon {
+  font-size: 30rpx;
+  color: var(--color-text-placeholder);
+  line-height: 1;
+}
+
+.done-active .done-icon {
+  color: #FFFFFF;
+}

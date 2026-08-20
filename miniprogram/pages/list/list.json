@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "reminder-card": "/components/reminder-card/reminder-card"
+  },
+  "enablePullDownRefresh": true
+}

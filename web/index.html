@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>勿忘事项 - 网页调试版</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- ============ 首页 ============ -->
+    <section id="page-home" class="page-view">
+      <div class="header">
+        <div class="header-top">
+          <span class="greeting">你好，今天记得关心一下～</span>
+          <span class="header-date" id="home-display-date"></span>
+        </div>
+        <div class="stats-row" id="home-stats-row"></div>
+      </div>
+      <div class="tab-bar" id="home-tab-bar"></div>
+      <div class="list-wrap" id="home-list-wrap"></div>
+      <div class="fab" id="home-fab"><span>+</span></div>
+      <div class="safe-bottom" style="height:60px;"></div>
+    </section>
+
+    <!-- ============ 列表页 ============ -->
+    <section id="page-list" class="page-view">
+      <div class="search-bar">
+        <div class="search-input-wrap search-hide" id="list-search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="list-search-input" placeholder="搜索提醒标题、备注..." />
+          <span class="search-clear" id="list-search-clear">✕</span>
+        </div>
+        <span class="search-toggle" id="list-search-toggle">搜索</span>
+      </div>
+      <div class="category-bar" id="list-category-bar"></div>
+      <div class="list-wrap" id="list-content"></div>
+      <div class="fab" id="list-fab"><span>+</span></div>
+      <div class="safe-bottom" style="height:60px;"></div>
+    </section>
+
+    <!-- ============ 添加/编辑页 ============ -->
+    <section id="page-add" class="page-view">
+      <div class="page" style="padding:12px 12px 0;">
+        <!-- AI 智能识别 -->
+        <div class="ai-hero card">
+          <div class="ai-hero-header">
+            <span class="ai-hero-title">AI 智能识别</span>
+            <span class="ai-hero-sub">说一句话或输入文字，自动填表</span>
+          </div>
+          <div class="ai-voice-large" id="add-voice-btn">
+            <div class="ai-voice-ring">
+              <span class="ai-voice-emoji">🎤</span>
+            </div>
+            <span class="ai-voice-label" id="add-voice-label">按住说话</span>
+          </div>
+          <div class="ai-text-toggle"><span id="add-text-toggle">改用文字输入 ›</span></div>
+          <div class="ai-text-wrap" id="add-text-wrap" style="display:none;">
+            <div class="ai-input-row">
+              <input class="ai-input" id="add-ai-input" placeholder="如：每月5号下午3点交电费提前1天" maxlength="100" />
+              <div class="ai-parse-btn" id="add-ai-parse-btn"><span class="ai-parse-btn-text">识别</span></div>
+            </div>
+          </div>
+          <div class="ai-tip-row" id="add-ai-tip-row" style="display:none;"><span class="ai-tip" id="add-ai-tip"></span></div>
+        </div>
+
+        <!-- 分类选择区 -->
+        <div class="section-title">选择分类</div>
+        <div class="category-scroll" id="add-category-scroll"></div>
+
+        <!-- 子类型选择区 -->
+        <div class="section-title">选择类型</div>
+        <div class="card subtype-card">
+          <div class="subtype-grid" id="add-subtype-grid"></div>
+        </div>
+
+        <!-- 表单卡片 -->
+        <div class="card form-card" id="add-form-card">
+          <div class="form-item">
+            <span class="form-label">标题</span>
+            <input class="form-input" id="add-title" placeholder="输入提醒标题" maxlength="30" style="text-align:right;" />
+          </div>
+          <div class="form-divider" id="add-date-divider"></div>
+          <div class="form-item" id="add-date-item">
+            <span class="form-label">提醒日期</span>
+            <div class="form-value-row">
+              <input type="date" class="picker-native" id="add-date" />
+              <span class="form-hint" id="add-date-hint"></span>
+              <span class="form-arrow">›</span>
+            </div>
+          </div>
+          <div class="form-divider"></div>
+          <div class="form-item">
+            <span class="form-label">提醒时间</span>
+            <div class="form-value-row">
+              <input type="time" class="picker-native" id="add-time" />
+              <span class="form-arrow">›</span>
+            </div>
+          </div>
+          <div class="form-divider"></div>
+          <div class="form-item">
+            <span class="form-label">提前提醒</span>
+            <div class="form-value-row">
+              <select class="picker-select" id="add-advance"></select>
+              <span class="form-arrow">›</span>
+            </div>
+          </div>
+          <div class="form-divider"></div>
+          <div class="form-item">
+            <span class="form-label">重复</span>
+            <div class="form-value-row">
+              <select class="picker-select" id="add-repeat"></select>
+              <span class="form-arrow">›</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 模糊日期：每月几号 -->
+        <div class="card form-card fuzzy-card" id="add-monthly-card" style="display:none;">
+          <div class="fuzzy-title">
+            <span class="fuzzy-title-icon">📅</span>
+            <span class="fuzzy-title-text">每月几号提醒</span>
+          </div>
+          <div class="form-item">
+            <span class="form-label">每月</span>
+            <div class="form-value-row">
+              <select class="picker-select" id="add-monthly-day"></select>
+              <span class="form-arrow">›</span>
+            </div>
+          </div>
+          <div class="fuzzy-tip-row"><span class="fuzzy-tip-text" id="add-monthly-preview"></span></div>
+        </div>
+
+        <!-- 模糊日期：每季度几号 -->
+        <div class="card form-card fuzzy-card" id="add-quarterly-card" style="display:none;">
+          <div class="fuzzy-title">
+            <span class="fuzzy-title-icon">🗓️</span>
+            <span class="fuzzy-title-text">每季度几号提醒</span>
+          </div>
+          <div class="form-item">
+            <span class="form-label">季度内月份</span>
+            <div class="form-value-row">
+              <select class="picker-select" id="add-quarterly-month"></select>
+              <span class="form-arrow">›</span>
+            </div>
+          </div>
+          <div class="form-divider"></div>
+          <div class="form-item">
+            <span class="form-label">几号</span>
+            <div class="form-value-row">
+              <select class="picker-select" id="add-quarterly-day"></select>
+              <span class="form-arrow">›</span>
+            </div>
+          </div>
+          <div class="fuzzy-tip-row"><span class="fuzzy-tip-text" id="add-quarterly-preview"></span></div>
+        </div>
+
+        <!-- 农历设置区 -->
+        <div class="card lunar-card" id="add-lunar-card">
+          <div class="form-item lunar-switch-item">
+            <div class="lunar-switch-left">
+              <span class="form-label">农历提醒</span>
+              <span class="lunar-tip" id="add-lunar-tip" style="display:none;">仅纪念日·每年时可用</span>
+            </div>
+            <div class="wx-switch" id="add-lunar-switch"></div>
+          </div>
+          <div id="add-lunar-fields" style="display:none;">
+            <div class="form-divider"></div>
+            <div class="form-item">
+              <span class="form-label">农历月份</span>
+              <div class="form-value-row">
+                <select class="picker-select" id="add-lunar-month"></select>
+                <span class="form-arrow">›</span>
+              </div>
+            </div>
+            <div class="form-divider"></div>
+            <div class="form-item">
+              <span class="form-label">农历日</span>
+              <div class="form-value-row">
+                <select class="picker-select" id="add-lunar-day"></select>
+                <span class="form-arrow">›</span>
+              </div>
+            </div>
+            <div class="form-divider"></div>
+            <div class="form-item lunar-switch-item">
+              <div class="lunar-switch-left"><span class="form-label">闰月</span></div>
+              <div class="wx-switch" id="add-lunar-leap"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 备注 -->
+        <div class="card form-card">
+          <div class="form-item form-item-top">
+            <span class="form-label">备注</span>
+          </div>
+          <textarea class="form-textarea" id="add-note" placeholder="添加备注（可选）" maxlength="200"></textarea>
+        </div>
+
+        <div class="bottom-placeholder"></div>
+      </div>
+      <div class="bottom-bar safe-bottom">
+        <button class="btn-primary save-btn" id="add-save-btn">保存提醒</button>
+        <button class="btn-ghost delete-btn" id="add-delete-btn" style="display:none;">删除此提醒</button>
+      </div>
+    </section>
+
+    <!-- ============ 详情页 ============ -->
+    <section id="page-detail" class="page-view">
+      <div class="loading-state" id="detail-loading">
+        <span class="loading-text">加载中...</span>
+      </div>
+      <div id="detail-content" style="display:none;"></div>
+    </section>
+
+    <!-- ============ 我的页 ============ -->
+    <section id="page-mine" class="page-view">
+      <div class="mine-page" id="mine-content"></div>
+    </section>
+
+    <!-- 底部 tabBar -->
+    <nav class="tabbar" id="tabbar">
+      <div class="tabbar-item" data-hash="home">
+        <span class="tabbar-icon">🏠</span>
+        <span class="tabbar-label">首页</span>
+      </div>
+      <div class="tabbar-item" data-hash="list">
+        <span class="tabbar-icon">📋</span>
+        <span class="tabbar-label">提醒</span>
+      </div>
+      <div class="tabbar-item" data-hash="mine">
+        <span class="tabbar-icon">👤</span>
+        <span class="tabbar-label">我的</span>
+      </div>
+    </nav>
+
+    <!-- 弹窗容器（动态） -->
+    <div id="modal-container"></div>
+  </div>
+
+  <!-- JS 加载顺序：mock-wx → constants → date → storage → reminder → app -->
+  <script src="js/mock-wx.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/date.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/reminder.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

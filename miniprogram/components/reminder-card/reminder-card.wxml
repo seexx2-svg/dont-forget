@@ -1,0 +1,41 @@
+<!--components/reminder-card/reminder-card.wxml-->
+<view class="reminder-card {{reminder.done ? 'is-done' : ''}} {{reminder.isOverdue ? 'is-overdue' : ''}}" catchtap="onTap">
+  <!-- 逾期左侧红色竖线 -->
+  <view wx:if="{{reminder.isOverdue}}" class="overdue-line"></view>
+
+  <!-- 左侧分类图标 -->
+  <view class="card-icon" style="background:{{reminder.categoryBg}}">
+    <text class="icon-emoji">{{reminder.categoryIcon}}</text>
+  </view>
+
+  <!-- 中间内容 -->
+  <view class="card-content flex-1">
+    <text class="card-title {{reminder.done ? 'title-done' : ''}}">{{reminder.title}}</text>
+
+    <view class="card-meta">
+      <text class="sub-tag" style="color:{{reminder.categoryColor}};background:{{reminder.categoryBg}}">{{reminder.subTypeIcon}} {{reminder.subTypeLabel}}</text>
+      <text class="card-date">{{reminder.fuzzyDateDesc || reminder.friendlyDate}}</text>
+      <text wx:if="{{reminder.remindTime}}" class="card-time">· {{reminder.remindTime}}</text>
+    </view>
+
+    <view wx:if="{{reminder.lunarDesc}}" class="card-lunar">🗓 {{reminder.lunarDesc}}</view>
+
+    <view class="card-bottom">
+      <!-- 逾期标记 -->
+      <view wx:if="{{reminder.isOverdue}}" class="overdue-badge">已逾期</view>
+      <!-- 今天标记 -->
+      <view wx:elif="{{reminder.isToday}}" class="today-badge" style="color:{{reminder.categoryColor}}">今天</view>
+      <!-- 倒计时 -->
+      <view wx:elif="{{reminder.daysLeft > 0}}" class="days-left" style="color:{{reminder.categoryColor}}">
+        <text class="days-num">{{reminder.daysLeft}}</text><text class="days-unit">天</text>
+      </view>
+      <!-- 重复标识 -->
+      <text wx:if="{{reminder.repeatType && reminder.repeatType !== 'none'}}" class="repeat-tag">🔁 {{reminder.repeatLabel}}</text>
+    </view>
+  </view>
+
+  <!-- 右侧完成按钮 -->
+  <view class="done-btn {{reminder.done ? 'done-active' : ''}}" catchtap="onDoneTap" catchlongpress="onDoneTap">
+    <text class="done-icon">{{reminder.done ? '✓' : '○'}}</text>
+  </view>
+</view>

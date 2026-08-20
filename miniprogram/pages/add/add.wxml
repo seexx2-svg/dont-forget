@@ -1,0 +1,356 @@
+<!--pages/add/add.wxml - 添加/编辑提醒页-->
+<view class="page">
+  <!-- AI 智能识别区（大卡片） -->
+  <view class="ai-hero card">
+    <view class="ai-hero-header">
+      <text class="ai-hero-title">AI 智能识别</text>
+      <text class="ai-hero-sub">说一句话或输入文字，自动填表</text>
+    </view>
+
+    <!-- 大语音按钮（默认显示，拇指热区） -->
+    <view class="ai-voice-large {{isRecording ? 'ai-voice-large-rec' : ''}} {{aiParsing ? 'ai-voice-large-disabled' : ''}}"
+          bindtouchstart="onRecordStart"
+          bindtouchend="onRecordEnd"
+          bindtouchcancel="onRecordEnd">
+      <view class="ai-voice-ring {{isRecording ? 'ai-voice-ring-active' : ''}}">
+        <text class="ai-voice-emoji">{{isRecording ? '🎙️' : '🎤'}}</text>
+      </view>
+      <text class="ai-voice-label">{{isRecording ? '松开结束' : (aiParsing ? '识别中…' : '按住说话')}}</text>
+    </view>
+
+    <!-- 切换到文字输入 -->
+    <view class="ai-text-toggle" bindtap="toggleTextInput">
+      <text>{{textInputVisible ? '收起文字输入' : '改用文字输入 ›'}}</text>
+    </view>
+
+    <!-- 文字输入区（点击展开） -->
+    <view wx:if="{{textInputVisible}}" class="ai-text-wrap">
+      <view class="ai-input-row">
+        <input
+          class="ai-input"
+          type="text"
+          value="{{aiInput}}"
+          placeholder="如：每月5号下午3点交电费提前1天"
+          placeholder-class="form-placeholder"
+          bindinput="onAIInput"
+          confirm-type="go"
+          bindconfirm="onAIParse"
+          maxlength="100"
+        />
+        <view class="ai-parse-btn {{aiParsing ? 'ai-parse-btn-disabled' : ''}}" bindtap="onAIParse">
+          <text class="ai-parse-btn-text">{{aiParsing ? '…' : '识别'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提示信息 -->
+    <view wx:if="{{aiTip}}" class="ai-tip-row">
+      <text class="ai-tip">{{aiTip}}</text>
+    </view>
+  </view>
+
+  <!-- 分类选择区 -->
+  <view class="section-title">选择分类</view>
+  <scroll-view scroll-x="true" class="category-scroll" enhanced="true" show-scrollbar="{{false}}">
+    <view class="category-list">
+      <view
+        wx:for="{{categories}}"
+        wx:key="key"
+        class="category-card {{form.category === item.key ? 'category-active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="selectCategory"
+        style="background:{{form.category === item.key ? item.bg : '#FFFFFF'}};border-color:{{form.category === item.key ? item.color : '#EEEEEE'}};"
+      >
+        <view class="category-icon" style="background:{{item.bg}};">
+          <text>{{item.icon}}</text>
+        </view>
+        <text class="category-name" style="color:{{form.category === item.key ? item.color : '#333333'}};">{{item.name}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 子类型选择区 -->
+  <view class="section-title">选择类型</view>
+  <view class="card subtype-card">
+    <view class="subtype-grid">
+      <view
+        wx:for="{{subTypes}}"
+        wx:key="value"
+        class="subtype-item {{form.subType === item.value ? 'subtype-active' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="selectSubType"
+      >
+        <view class="subtype-icon-wrap">
+          <text class="subtype-icon">{{item.icon}}</text>
+        </view>
+        <text class="subtype-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 录音全屏遮罩 -->
+  <view wx:if="{{voicePanelVisible}}" class="voice-mask">
+    <view class="voice-mask-inner">
+      <view class="voice-wave {{isRecording ? 'voice-wave-active' : ''}}">
+        <view class="voice-wave-bar"></view>
+        <view class="voice-wave-bar"></view>
+        <view class="voice-wave-bar"></view>
+        <view class="voice-wave-bar"></view>
+        <view class="voice-wave-bar"></view>
+      </view>
+      <text class="voice-mask-tip">{{isRecording ? '正在聆听…松开结束' : '识别中…'}}</text>
+      <text wx:if="{{voiceTempText}}" class="voice-mask-text">{{voiceTempText}}</text>
+    </view>
+  </view>
+
+  <!-- 表单卡片 -->
+  <view class="card form-card">
+    <!-- 标题 -->
+    <view class="form-item">
+      <text class="form-label">标题</text>
+      <input
+        class="form-input"
+        type="text"
+        value="{{form.title}}"
+        placeholder="输入提醒标题"
+        placeholder-class="form-placeholder"
+        bindinput="onTitleInput"
+        maxlength="30"
+      />
+    </view>
+
+    <view class="form-divider"></view>
+
+    <!-- 日期（仅不重复时可选；重复类型自动计算） -->
+    <block wx:if="{{form.repeatType === 'none'}}">
+      <view class="form-item">
+        <text class="form-label">提醒日期</text>
+        <picker mode="date" value="{{form.remindDate}}" bindchange="onDateChange">
+          <view class="form-value-row">
+            <text class="form-value">{{form.remindDate}}</text>
+            <text class="form-hint">{{dateHint}}</text>
+            <text class="form-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-divider"></view>
+    </block>
+
+    <!-- 每天：只显示时间，日期自动计算 -->
+    <block wx:if="{{form.repeatType === 'daily'}}">
+      <view class="form-item">
+        <text class="form-label">提醒日期</text>
+        <view class="form-value-row">
+          <text class="form-value fuzzy-date-value">每天</text>
+          <text class="form-hint">自动计算</text>
+        </view>
+      </view>
+
+      <view class="form-divider"></view>
+    </block>
+
+    <!-- 每周：选择星期几 -->
+    <block wx:if="{{form.repeatType === 'weekly'}}">
+      <view class="form-item">
+        <text class="form-label">每周</text>
+        <picker mode="selector" range="{{weekdayLabels}}" value="{{weekdayIndex}}" bindchange="onWeekdayChange">
+          <view class="form-value-row">
+            <text class="form-value">{{weekdayLabels[weekdayIndex]}}</text>
+            <text class="form-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-divider"></view>
+    </block>
+
+    <!-- 时间 -->
+    <view class="form-item">
+      <text class="form-label">提醒时间</text>
+      <picker mode="time" value="{{form.remindTime}}" bindchange="onTimeChange">
+        <view class="form-value-row">
+          <text class="form-value">{{form.remindTime}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-divider"></view>
+
+    <!-- 提前提醒 -->
+    <view class="form-item">
+      <text class="form-label">提前提醒</text>
+      <picker mode="selector" range="{{advanceLabels}}" value="{{advanceIndex}}" bindchange="onAdvanceChange">
+        <view class="form-value-row">
+          <text class="form-value">{{advanceOptions[advanceIndex].label}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-divider"></view>
+
+    <!-- 重复类型 -->
+    <view class="form-item">
+      <text class="form-label">重复</text>
+      <picker mode="selector" range="{{repeatLabels}}" value="{{repeatIndex}}" bindchange="onRepeatChange">
+        <view class="form-value-row">
+          <text class="form-value">{{repeatTypes[repeatIndex].label}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 模糊日期：每月几号 -->
+  <view wx:if="{{form.repeatType === 'monthlyDay'}}" class="card form-card fuzzy-card">
+    <view class="fuzzy-title">
+      <text class="fuzzy-title-icon">📅</text>
+      <text class="fuzzy-title-text">每月几号提醒</text>
+    </view>
+    <view class="form-item">
+      <text class="form-label">每月</text>
+      <picker mode="selector" range="{{monthlyDayLabels}}" value="{{monthlyDayIndex}}" bindchange="onMonthlyDayChange">
+        <view class="form-value-row">
+          <text class="form-value">{{monthlyDayLabels[monthlyDayIndex]}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+    <view class="fuzzy-tip-row">
+      <text class="fuzzy-tip-text">最近提醒日：{{fuzzyPreview}}</text>
+    </view>
+  </view>
+
+  <!-- 模糊日期：每季度几号 -->
+  <view wx:if="{{form.repeatType === 'quarterlyDay'}}" class="card form-card fuzzy-card">
+    <view class="fuzzy-title">
+      <text class="fuzzy-title-icon">🗓️</text>
+      <text class="fuzzy-title-text">每季度几号提醒</text>
+    </view>
+    <view class="form-item">
+      <text class="form-label">季度内月份</text>
+      <picker mode="selector" range="{{quarterlyMonthLabels}}" value="{{quarterlyMonthIndex}}" bindchange="onQuarterlyMonthChange">
+        <view class="form-value-row">
+          <text class="form-value">{{quarterlyMonthLabels[quarterlyMonthIndex]}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+    <view class="form-divider"></view>
+    <view class="form-item">
+      <text class="form-label">几号</text>
+      <picker mode="selector" range="{{quarterlyDayLabels}}" value="{{quarterlyDayIndex}}" bindchange="onQuarterlyDayChange">
+        <view class="form-value-row">
+          <text class="form-value">{{quarterlyDayLabels[quarterlyDayIndex]}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+    <view class="fuzzy-tip-row">
+      <text class="fuzzy-tip-text">最近提醒日：{{fuzzyPreview}}</text>
+    </view>
+  </view>
+
+  <!-- 模糊日期：每年几月几号 -->
+  <view wx:if="{{form.repeatType === 'yearly'}}" class="card form-card fuzzy-card">
+    <view class="fuzzy-title">
+      <text class="fuzzy-title-icon">🎂</text>
+      <text class="fuzzy-title-text">每年几月几号提醒</text>
+    </view>
+    <view class="form-item">
+      <text class="form-label">月份</text>
+      <picker mode="selector" range="{{yearlyMonthLabels}}" value="{{yearlyMonthIndex}}" bindchange="onYearlyMonthChange">
+        <view class="form-value-row">
+          <text class="form-value">{{yearlyMonthLabels[yearlyMonthIndex]}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+    <view class="form-divider"></view>
+    <view class="form-item">
+      <text class="form-label">日期</text>
+      <picker mode="selector" range="{{yearlyDayLabels}}" value="{{yearlyDayIndex}}" bindchange="onYearlyDayChange">
+        <view class="form-value-row">
+          <text class="form-value">{{yearlyDayLabels[yearlyDayIndex]}}</text>
+          <text class="form-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+    <view class="fuzzy-tip-row">
+      <text class="fuzzy-tip-text">最近提醒日：{{fuzzyPreview}}</text>
+    </view>
+  </view>
+
+  <!-- 农历设置区（仅 anniversary + yearly 可用） -->
+  <view class="card lunar-card {{canLunar ? '' : 'lunar-disabled'}}">
+    <view class="form-item lunar-switch-item">
+      <view class="lunar-switch-left">
+        <text class="form-label">农历提醒</text>
+        <text class="lunar-tip" wx:if="{{!canLunar}}">仅纪念日·每年时可用</text>
+      </view>
+      <switch checked="{{form.isLunar}}" bindchange="toggleLunar" disabled="{{!canLunar}}" color="#4ECDC4" />
+    </view>
+
+    <!-- 农历月日选择 -->
+    <block wx:if="{{form.isLunar && canLunar}}">
+      <view class="form-divider"></view>
+      <view class="form-item">
+        <text class="form-label">农历月份</text>
+        <picker mode="selector" range="{{lunarMonthRange}}" value="{{lunarMonthIndex}}" bindchange="onLunarMonthChange">
+          <view class="form-value-row">
+            <text class="form-value">{{lunarMonthRange[lunarMonthIndex]}}</text>
+            <text class="form-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-divider"></view>
+
+      <view class="form-item">
+        <text class="form-label">农历日</text>
+        <picker mode="selector" range="{{lunarDayRange}}" value="{{lunarDayIndex}}" bindchange="onLunarDayChange">
+          <view class="form-value-row">
+            <text class="form-value">{{lunarDayRange[lunarDayIndex]}}</text>
+            <text class="form-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-divider"></view>
+
+      <view class="form-item">
+        <text class="form-label">闰月</text>
+        <switch checked="{{form.lunarIsLeap}}" bindchange="toggleLunarLeap" color="#4ECDC4" />
+      </view>
+    </block>
+  </view>
+
+  <!-- 备注 -->
+  <view class="card form-card">
+    <view class="form-item form-item-top">
+      <text class="form-label">备注</text>
+    </view>
+    <textarea
+      class="form-textarea"
+      value="{{form.note}}"
+      placeholder="添加备注（可选）"
+      placeholder-class="form-placeholder"
+      bindinput="onNoteInput"
+      maxlength="200"
+      auto-height
+    />
+  </view>
+
+  <!-- 占位，避免底部按钮遮挡内容 -->
+  <view class="bottom-placeholder"></view>
+
+  <!-- 底部按钮区 -->
+  <view class="bottom-bar safe-bottom">
+    <button class="btn-primary save-btn" bindtap="onSave">
+      {{isEdit ? '保存修改' : '保存提醒'}}
+    </button>
+    <button wx:if="{{isEdit}}" class="btn-ghost delete-btn" bindtap="onDelete">删除此提醒</button>
+  </view>
+</view>

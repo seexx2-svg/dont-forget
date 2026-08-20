@@ -1,0 +1,38 @@
+<!--components/calendar/calendar.wxml-->
+<view class="calendar">
+  <!-- 月份切换 -->
+  <view class="cal-header">
+    <view class="cal-nav" bindtap="onPrevMonth"><text>‹</text></view>
+    <view class="cal-title" bindtap="onToday">
+      <text class="cal-month">{{year}}年{{monthName}}</text>
+      <text class="cal-today-link">回到今天</text>
+    </view>
+    <view class="cal-nav" bindtap="onNextMonth"><text>›</text></view>
+  </view>
+
+  <!-- 星期表头 -->
+  <view class="cal-weekdays">
+    <text wx:for="{{weekdays}}" wx:key="*this" class="cal-weekday {{index === 0 || index === 6 ? 'weekday-weekend' : ''}}">{{item}}</text>
+  </view>
+
+  <!-- 日历网格 -->
+  <view class="cal-grid">
+    <view wx:for="{{weeks}}" wx:for-item="week" wx:key="*this" wx:for-index="widx" class="cal-week">
+      <view
+        wx:for="{{week}}"
+        wx:for-item="cell"
+        wx:key="dateStr"
+        class="cal-cell {{!cell.isCurrentMonth ? 'cell-other-month' : ''}} {{cell.isToday ? 'cell-today' : ''}} {{cell.isSelected ? 'cell-selected' : ''}} {{cell.isWeekend ? 'cell-weekend' : ''}} {{cell.isHoliday ? 'cell-holiday' : ''}}"
+        data-date="{{cell.dateStr}}"
+        data-current="{{cell.isCurrentMonth}}"
+        bindtap="onDayTap"
+      >
+        <view class="cell-inner {{cell.isToday ? 'inner-today' : ''}} {{cell.isSelected ? 'inner-selected' : ''}}">
+          <text class="cell-day {{cell.isMarked ? 'cell-marked' : ''}} {{cell.isToday ? 'day-today' : ''}}">{{cell.day}}</text>
+          <text wx:if="{{cell.lunarText}}" class="cell-lunar {{cell.isHoliday ? 'lunar-holiday' : ''}} {{cell.isToday ? 'lunar-today' : ''}}">{{cell.lunarText}}</text>
+          <view wx:if="{{cell.isMarked}}" class="cell-dot {{cell.isToday ? 'dot-today' : ''}}"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

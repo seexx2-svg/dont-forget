@@ -1,0 +1,201 @@
+<!--pages/mine/mine.wxml-->
+<!--我的页面-->
+
+<view class="page">
+
+  <!-- 顶部用户区域 -->
+  <view class="header">
+    <view class="header-inner">
+      <view class="avatar">
+        <text class="avatar-icon">👤</text>
+      </view>
+      <view class="app-name">勿忘事项</view>
+      <view class="app-version">v{{appVersion}}</view>
+    </view>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="card stats-card" wx:if="{{stats}}">
+    <view class="stats-row">
+      <view class="stats-item">
+        <view class="stats-num">{{stats.total}}</view>
+        <view class="stats-label">总提醒</view>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <view class="stats-num text-danger">{{stats.today}}</view>
+        <view class="stats-label">今日</view>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <view class="stats-num text-primary">{{stats.upcoming}}</view>
+        <view class="stats-label">即将</view>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <view class="stats-num">{{stats.done}}</view>
+        <view class="stats-label">已完成</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类统计卡片 -->
+  <view class="card" wx:if="{{stats}}">
+    <view class="card-title">分类统计</view>
+    <block wx:for="{{categories}}" wx:key="*this" wx:for-item="cat" wx:for-index="key">
+      <view class="cat-row" bindtap="onCategoryTap" data-key="{{key}}" hover-class="row-hover" hover-stay-time="80">
+        <view class="cat-left">
+          <view class="cat-icon" style="background:{{cat.bg}};color:{{cat.color}}">{{cat.icon}}</view>
+          <text class="cat-name">{{cat.name}}</text>
+        </view>
+        <view class="cat-right">
+          <text class="cat-total">{{stats.byCategory[key] ? stats.byCategory[key].total : 0}}条</text>
+          <text class="cat-pending">待处理 {{stats.byCategory[key] ? stats.byCategory[key].pending : 0}}</text>
+          <text class="cat-arrow">›</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 设置卡片 -->
+  <view class="card">
+    <view class="card-title">通用设置</view>
+
+    <view class="setting-row">
+      <view class="setting-left">
+        <text class="setting-icon">🔔</text>
+        <view class="setting-text">
+          <view class="setting-name">通知提醒</view>
+          <view class="setting-desc">开启后接收提醒推送</view>
+        </view>
+      </view>
+      <switch checked="{{settings.notifyEnabled}}" bindchange="onNotifyChange" color="#4ECDC4"/>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="setting-row">
+      <view class="setting-left">
+        <text class="setting-icon">⏰</text>
+        <view class="setting-text">
+          <view class="setting-name">提前通知</view>
+          <view class="setting-desc">提前提醒即将到期的项目</view>
+        </view>
+      </view>
+      <switch checked="{{settings.advanceNotify}}" bindchange="onAdvanceNotifyChange" color="#4ECDC4"/>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="setting-row">
+      <view class="setting-left">
+        <text class="setting-icon">📅</text>
+        <view class="setting-text">
+          <view class="setting-name">农历显示</view>
+          <view class="setting-desc">纪念日显示农历日期</view>
+        </view>
+      </view>
+      <switch checked="{{settings.lunarCalendar}}" bindchange="onLunarCalendarChange" color="#4ECDC4"/>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="setting-row privacy-row">
+      <view class="setting-left">
+        <text class="setting-icon">🔒</text>
+        <view class="setting-text">
+          <view class="setting-name">隐私锁</view>
+          <view class="setting-desc">开启后需密码访问</view>
+        </view>
+      </view>
+      <switch checked="{{privacyLockEnabled}}" bindchange="onPrivacyLockChange" color="#4ECDC4"/>
+    </view>
+  </view>
+
+  <!-- 数据管理卡片 -->
+  <view class="card">
+    <view class="card-title">数据管理</view>
+
+    <view class="action-row" bindtap="onExportData">
+      <view class="action-left">
+        <text class="action-icon">📤</text>
+        <text class="action-name">导出数据</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="action-row" bindtap="onImportData">
+      <view class="action-left">
+        <text class="action-icon">📥</text>
+        <text class="action-name">导入数据</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="action-row" bindtap="onClearData">
+      <view class="action-left">
+        <text class="action-icon">🗑️</text>
+        <text class="action-name text-danger">清空数据</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 其他卡片 -->
+  <view class="card">
+    <view class="card-title">其他</view>
+
+    <view class="action-row" bindtap="onAbout">
+      <view class="action-left">
+        <text class="action-icon">ℹ️</text>
+        <text class="action-name">关于</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+
+    <view class="divider"></view>
+
+    <button class="share-btn" open-type="share">
+      <view class="action-row share-row">
+        <view class="action-left">
+          <text class="action-icon">💌</text>
+          <text class="action-name">分享给朋友</text>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+    </button>
+  </view>
+
+  <view class="footer-tip text-placeholder">勿忘事项 · 让生活更有条理</view>
+  <view class="safe-bottom"></view>
+
+</view>
+
+<!-- 密码输入弹窗 -->
+<view class="modal-mask" wx:if="{{showPasswordModal}}" catchtap="cancelPassword">
+  <view class="modal-content" catchtap="">
+    <view class="modal-title">{{isSettingPassword ? '设置隐私密码' : '请输入密码'}}</view>
+    <view class="modal-desc">{{isSettingPassword ? '请输入4位数字作为隐私锁密码' : '请输入隐私锁密码以解锁'}}</view>
+
+    <view class="password-box">
+      <input
+        class="password-input"
+        type="number"
+        maxlength="4"
+        value="{{passwordInput}}"
+        placeholder="••••"
+        bindinput="onPasswordInput"
+        focus="{{showPasswordModal}}"
+      />
+    </view>
+
+    <view class="modal-btns">
+      <view class="modal-btn modal-btn-cancel" bindtap="cancelPassword">取消</view>
+      <view class="modal-btn modal-btn-confirm" bindtap="confirmPassword">确定</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,236 @@
+/* components/calendar/calendar.wxss */
+.calendar {
+  background: linear-gradient(160deg, #FFFFFF 0%, #F0FBFA 100%);
+  border-radius: 28rpx;
+  padding: 28rpx 20rpx 16rpx;
+  box-shadow: 0 6rpx 24rpx rgba(78, 205, 196, 0.1);
+  margin: 16rpx 0;
+  border: 1rpx solid rgba(78, 205, 196, 0.08);
+}
+
+/* 月份切换 */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8rpx 24rpx;
+}
+
+.cal-nav {
+  width: 68rpx;
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(78, 205, 196, 0.1);
+  transition: all 0.2s;
+}
+
+.cal-nav:active {
+  background: rgba(78, 205, 196, 0.25);
+  transform: scale(0.95);
+}
+
+.cal-nav text {
+  font-size: 48rpx;
+  color: #4ECDC4;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.cal-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cal-month {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  line-height: 1.2;
+  letter-spacing: 2rpx;
+}
+
+.cal-today-link {
+  font-size: 20rpx;
+  color: #4ECDC4;
+  margin-top: 6rpx;
+  padding: 4rpx 16rpx;
+  background: rgba(78, 205, 196, 0.1);
+  border-radius: 20rpx;
+}
+
+/* 星期表头 */
+.cal-weekdays {
+  display: flex;
+  padding: 8rpx 0 16rpx;
+  border-bottom: 1rpx solid rgba(78, 205, 196, 0.12);
+  margin-bottom: 8rpx;
+}
+
+.cal-weekday {
+  flex: 1;
+  text-align: center;
+  font-size: 24rpx;
+  color: #95A5A6;
+  font-weight: 500;
+}
+
+.weekday-weekend {
+  color: #E67E22;
+}
+
+/* 日历网格 */
+.cal-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.cal-week {
+  display: flex;
+}
+
+.cal-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100rpx;
+  position: relative;
+}
+
+.cell-inner {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.cell-day {
+  font-size: 28rpx;
+  color: #2C3E50;
+  line-height: 1.2;
+}
+
+.cell-other-month .cell-day {
+  color: #D5D8DC;
+}
+
+.cell-weekend .cell-day {
+  color: #E67E22;
+}
+
+.cell-other-month.cell-weekend .cell-day {
+  color: #FAE5D3;
+}
+
+/* 农历 */
+.cell-lunar {
+  font-size: 18rpx;
+  color: #BDC3C7;
+  line-height: 1.2;
+  margin-top: 2rpx;
+}
+
+.cell-other-month .cell-lunar {
+  color: #E8EAE9;
+}
+
+.lunar-holiday {
+  color: #FF6B6B !important;
+  font-weight: 600;
+}
+
+.cell-other-month .lunar-holiday {
+  color: #FFCDD2 !important;
+}
+
+/* 今日 */
+.inner-today {
+  background: linear-gradient(135deg, #2BB5AB 0%, #1A9A90 100%);
+  box-shadow: 0 4rpx 16rpx rgba(26, 154, 144, 0.45);
+}
+
+.day-today {
+  color: #FFFFFF !important;
+  font-weight: 700;
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.2);
+}
+
+.lunar-today {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* 今日节日高亮（白色加粗） */
+.inner-today .lunar-holiday {
+  color: #FFFFFF !important;
+}
+
+/* 选中日期 */
+.inner-selected {
+  background: rgba(78, 205, 196, 0.12);
+}
+
+.cell-selected .cell-day {
+  color: #4ECDC4;
+  font-weight: 600;
+}
+
+.cell-selected .cell-lunar {
+  color: #4ECDC4;
+}
+
+/* 选中当天：保持今日的深色背景 */
+.inner-today.inner-selected {
+  background: linear-gradient(135deg, #2BB5AB 0%, #1A9A90 100%) !important;
+  box-shadow: 0 4rpx 16rpx rgba(26, 154, 144, 0.45);
+}
+
+.cell-today.cell-selected .cell-day {
+  color: #FFFFFF !important;
+  font-weight: 700;
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.2);
+}
+
+.cell-today.cell-selected .cell-lunar {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.cell-today.cell-selected .lunar-holiday {
+  color: #FFFFFF !important;
+}
+
+/* 有提醒的红点标记 */
+.cell-dot {
+  position: absolute;
+  bottom: 8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #FF6B6B;
+  box-shadow: 0 0 6rpx rgba(255, 107, 107, 0.6);
+}
+
+.dot-today {
+  background: #FFFFFF;
+  box-shadow: 0 0 6rpx rgba(255, 255, 255, 0.8);
+}
+
+/* 节假日日期数字也用红色（公历节日） */
+.cell-holiday .cell-day {
+  color: #FF6B6B;
+}
+
+.cell-holiday.cell-weekend .cell-day {
+  color: #FF6B6B;
+}

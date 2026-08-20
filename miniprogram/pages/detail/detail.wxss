@@ -1,0 +1,269 @@
+/* pages/detail/detail.wxss - 提醒详情页样式 */
+
+.page {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding-bottom: 40rpx;
+}
+
+/* ===== 顶部卡片区域 ===== */
+.hero {
+  position: relative;
+  padding: 48rpx 32rpx 56rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #FFFFFF;
+  overflow: hidden;
+}
+
+.hero-icon {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60rpx;
+  margin-bottom: 24rpx;
+}
+
+.hero-title {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 20rpx;
+  word-break: break-all;
+}
+
+.hero-tags {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  color: #FFFFFF;
+  margin: 0 8rpx 8rpx;
+}
+
+.hero-tag-icon {
+  margin-right: 6rpx;
+}
+
+.countdown-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 32rpx;
+}
+
+.countdown-num {
+  font-size: 72rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
+}
+
+.countdown-sub {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 8rpx;
+}
+
+.hero-done-badge {
+  position: absolute;
+  top: 32rpx;
+  right: 32rpx;
+  padding: 8rpx 20rpx;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  color: #FFFFFF;
+}
+
+/* ===== 信息列表卡片 ===== */
+.info-card {
+  margin: 24rpx;
+  padding: 8rpx 28rpx;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 92rpx;
+  padding: 16rpx 0;
+}
+
+.info-item-col {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.info-label {
+  width: 160rpx;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.info-value-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: var(--color-text);
+  text-align: right;
+}
+
+.info-extra {
+  font-size: 22rpx;
+  color: var(--color-primary);
+  margin-left: 12rpx;
+}
+
+.info-note {
+  width: 100%;
+  font-size: 28rpx;
+  color: var(--color-text);
+  line-height: 1.6;
+  padding: 8rpx 0 16rpx;
+  background: #F9FAFC;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-top: 8rpx;
+  box-sizing: border-box;
+}
+
+.info-divider {
+  height: 1rpx;
+  background: var(--color-border);
+}
+
+/* ===== 底部操作区 ===== */
+.bottom-placeholder {
+  height: 220rpx;
+}
+
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #FFFFFF;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+  z-index: 50;
+}
+
+.subscribe-row {
+  padding: 16rpx 32rpx 8rpx;
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.subscribe-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 68rpx;
+  border-radius: 34rpx;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 26rpx;
+}
+
+.subscribe-icon {
+  margin-right: 8rpx;
+  font-size: 28rpx;
+}
+
+.action-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 20rpx 16rpx;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.action-circle {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5F6FA;
+  margin-bottom: 10rpx;
+  border: 2rpx solid transparent;
+}
+
+.action-text {
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+}
+
+.action-edit {
+  background: var(--color-primary-light);
+}
+
+.action-edit .action-emoji {
+  color: var(--color-primary);
+  font-size: 36rpx;
+}
+
+.action-delete {
+  background: #FFF0F0;
+}
+
+.action-delete .action-emoji {
+  font-size: 32rpx;
+}
+
+.action-done {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.check-icon {
+  color: #FFFFFF;
+  font-size: 44rpx;
+  font-weight: bold;
+}
+
+/* ===== 加载状态 ===== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--color-text-placeholder);
+}

@@ -1,0 +1,54 @@
+<!--pages/list/list.wxml-->
+<view class="page">
+  <!-- 顶部搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap {{showSearch ? 'search-show' : 'search-hide'}}">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索提醒标题、备注..."
+        value="{{keyword}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" confirm-type="search" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="onSearchClear">✕</text>
+    </view>
+    <text class="search-toggle" bindtap="toggleSearch">{{showSearch ? '取消' : '搜索'}}</text>
+  </view>
+
+  <!-- 横向分类标签栏 -->
+  <scroll-view scroll-x class="category-bar" enhanced show-scrollbar="{{false}}">
+    <view class="cat-list">
+      <view wx:for="{{categories}}" wx:key="value"
+        class="cat-item {{activeCategory === item.value ? 'cat-active' : ''}}"
+        data-category="{{item.value}}"
+        bindtap="switchCategory"
+        style="{{activeCategory === item.value ? 'background:' + item.color + ';color:#FFFFFF;' : 'color:' + item.color + ';'}}">
+        <text class="cat-icon">{{item.icon}}</text>
+        <text class="cat-label">{{item.label}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 列表区域 -->
+  <view class="list-wrap">
+    <block wx:if="{{list.length}}">
+      <reminder-card wx:for="{{list}}" wx:key="_id" reminder="{{item}}"
+        bind:tap="onReminderTap" bind:done="onReminderDone"
+        bindlongpress="onSwipeDelete" data-id="{{item._id}}"></reminder-card>
+    </block>
+    <view wx:else class="empty-state">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">{{keyword ? '没有找到匹配的提醒' : '该分类下还没有提醒'}}</text>
+    </view>
+
+    <!-- 已完成区域 -->
+    <view wx:if="{{doneList.length}}" class="done-section">
+      <view class="done-header">
+        <text class="done-title">已完成 ({{doneList.length}})</text>
+      </view>
+      <reminder-card wx:for="{{doneList}}" wx:key="_id" reminder="{{item}}"
+        bind:tap="onReminderTap" bind:done="onReminderDone"
+        bindlongpress="onSwipeDelete" data-id="{{item._id}}"></reminder-card>
+    </view>
+  </view>
+
+  <!-- 浮动添加按钮 -->
+  <view class="fab" bindtap="goAdd"><text>+</text></view>
+  <view class="safe-bottom"></view>
+</view>

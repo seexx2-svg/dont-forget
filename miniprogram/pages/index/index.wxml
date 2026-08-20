@@ -1,0 +1,119 @@
+<!--pages/index/index.wxml-->
+<view class="page">
+  <!-- 顶部欢迎区 -->
+  <view class="header">
+    <view class="header-top">
+      <text class="greeting">你好，今天记得关心一下～</text>
+      <text class="header-date">{{displayDate}}</text>
+    </view>
+
+    <!-- 三个统计卡片 -->
+    <view class="stats-row">
+      <view class="stat-card">
+        <text class="stat-num">{{stats.today || 0}}</text>
+        <text class="stat-label">今日</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-num">{{stats.upcoming || 0}}</text>
+        <text class="stat-label">即将</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-num {{stats.overdue ? 'num-danger' : ''}}">{{stats.overdue || 0}}</text>
+        <text class="stat-label">逾期</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 月历组件 -->
+  <calendar
+    marked-days="{{calendarMarkedDays}}"
+    selected-date="{{calendarSelectedDate}}"
+    bind:select="onCalendarSelect"
+    bind:monthchange="onCalendarMonthChange"
+  ></calendar>
+
+  <!-- Tab 切换栏 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'today' ? 'tab-active' : ''}}" data-tab="today" bindtap="switchTab">
+      <text>今日</text>
+      <text wx:if="{{stats.today}}" class="tab-badge">{{stats.today}}</text>
+    </view>
+    <view class="tab-item {{activeTab === 'upcoming' ? 'tab-active' : ''}}" data-tab="upcoming" bindtap="switchTab">
+      <text>即将到期</text>
+      <text wx:if="{{stats.upcoming}}" class="tab-badge">{{stats.upcoming}}</text>
+    </view>
+    <view class="tab-item {{activeTab === 'overdue' ? 'tab-active' : ''}}" data-tab="overdue" bindtap="switchTab">
+      <text>已逾期</text>
+      <text wx:if="{{stats.overdue}}" class="tab-badge badge-danger">{{stats.overdue}}</text>
+    </view>
+  </view>
+
+  <!-- 内容区 -->
+  <view class="list-wrap">
+    <!-- 今日 -->
+    <block wx:if="{{activeTab === 'today'}}">
+      <block wx:if="{{todayList.length}}">
+        <reminder-card wx:for="{{todayList}}" wx:key="_id" reminder="{{item}}"
+          bind:tap="onReminderTap" bind:done="onReminderDone"></reminder-card>
+      </block>
+      <view wx:else class="empty-state">
+        <text class="empty-icon">🎉</text>
+        <text class="empty-text">今天没有提醒，好好享受这一天～</text>
+      </view>
+    </block>
+
+    <!-- 即将到期 -->
+    <block wx:if="{{activeTab === 'upcoming'}}">
+      <block wx:if="{{upcomingList.length}}">
+        <reminder-card wx:for="{{upcomingList}}" wx:key="_id" reminder="{{item}}"
+          bind:tap="onReminderTap" bind:done="onReminderDone"></reminder-card>
+      </block>
+      <view wx:else class="empty-state">
+        <text class="empty-icon">📅</text>
+        <text class="empty-text">未来7天暂无即将到期的提醒</text>
+      </view>
+    </block>
+
+    <!-- 已逾期 -->
+    <block wx:if="{{activeTab === 'overdue'}}">
+      <block wx:if="{{overdueList.length}}">
+        <reminder-card wx:for="{{overdueList}}" wx:key="_id" reminder="{{item}}"
+          bind:tap="onReminderTap" bind:done="onReminderDone"></reminder-card>
+      </block>
+      <view wx:else class="empty-state">
+        <text class="empty-icon">✅</text>
+        <text class="empty-text">没有逾期提醒，保持得很棒！</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 浮动按钮组：🔔推送 + ➕添加 -->
+  <view class="fab-group">
+    <view class="fab fab-notify" bindtap="onToggleNotify"><text>🔔</text></view>
+    <view class="fab" bindtap="goAdd"><text>+</text></view>
+  </view>
+  <view class="safe-bottom"></view>
+</view>
+
+<!-- 隐私锁拦截弹窗 -->
+<view class="lock-mask" wx:if="{{showLockModal}}" catchtouchmove="noop">
+  <view class="lock-card">
+    <view class="lock-icon">🔒</view>
+    <view class="lock-title">隐私锁已开启</view>
+    <view class="lock-desc">请输入4位数字密码以查看提醒内容</view>
+    <view class="lock-input-box">
+      <input
+        class="lock-input"
+        type="number"
+        maxlength="4"
+        value="{{lockPasswordInput}}"
+        placeholder="••••"
+        bindinput="onLockInput"
+        bindconfirm="onLockConfirm"
+        focus="{{showLockModal}}"
+        password
+      />
+    </view>
+    <view class="lock-btn" bindtap="onLockConfirm">解锁</view>
+  </view>
+</view>
